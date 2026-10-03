@@ -1,0 +1,7 @@
+{
+  "theme": "matrix",
+  "timeout": 30,
+  "report_dir": "reports",
+  "log_dir": "logs",
+  "verbosity": "normal"
+}
