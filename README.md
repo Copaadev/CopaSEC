@@ -1,5 +1,7 @@
 # CopaSec 2.0
 
+![CopaSec](github.png)
+
 
 **Security Recon Framework** para terminal, feito em Python puro (sem dependências externas).
 
