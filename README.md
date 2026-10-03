@@ -1,5 +1,6 @@
 # CopaSec 2.0
 
+
 **Security Recon Framework** para terminal, feito em Python puro (sem dependências externas).
 
 > ⚠️ **Uso autorizado apenas.** Use somente em máquinas e redes que você possui ou para as quais tem permissão explícita: laboratório próprio, CTFs permitidos e administração de sistemas. O autor não se responsabiliza pelo uso indevido.
@@ -39,7 +40,7 @@ O CopaSec **nunca** executa `sudo` nem instala nada sozinho. Quando falta uma fe
 ## Instalação
 
 ```bash
-git clone <url-do-repositorio> copasec
+git clone https://github.com/Copaadev/copasec.git copasec
 cd copasec
 python3 -m venv .venv
 source .venv/bin/activate
