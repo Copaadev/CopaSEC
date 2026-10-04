@@ -1,7 +1,8 @@
 """Entrada interativa validada."""
 
 from colors import accent, error, paint, warn
-from targets import InvalidInput, is_ip, parse_port, parse_target, port_args
+from targets import (InvalidInput, is_ip, parse_port, parse_target,
+                     parse_web_target, port_args)
 
 _AUTHORIZED = set()
 
@@ -24,12 +25,15 @@ def confirm_authorized(target: str) -> bool:
 
 
 def ask_target(label: str = "Target (IP or domain)", allow_cidr: bool = False,
-               domain_only: bool = False):
+               domain_only: bool = False, web: bool = False):
     raw = _ask(label)
     if not raw:
         return None
     try:
-        target = parse_target(raw, allow_cidr=allow_cidr)
+        if web:
+            target = parse_web_target(raw)
+        else:
+            target = parse_target(raw, allow_cidr=allow_cidr)
     except InvalidInput as exc:
         error(str(exc))
         return None

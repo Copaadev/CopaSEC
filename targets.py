@@ -80,3 +80,44 @@ def port_args(spec: str) -> list:
         if not 1 <= int(number) <= 65535:
             raise InvalidInput("Ports must be between 1 and 65535.")
     return ["-p", spec]
+
+
+def parse_web_target(raw: str) -> str:
+    """Valida alvo web (host, host:porta ou URL) preservando esquema e porta."""
+    value = (raw or "").strip()
+    if not value:
+        raise InvalidInput("Empty target.")
+
+    scheme = ""
+    if "://" in value:
+        scheme, value = value.split("://", 1)
+        scheme = scheme.lower()
+        if scheme not in ("http", "https"):
+            raise InvalidInput("Only http:// and https:// URLs are supported.")
+
+    for sep in ("/", "?", "#"):
+        value = value.split(sep, 1)[0]
+
+    host, port = value, None
+    if value.startswith("["):
+        end = value.find("]")
+        if end == -1:
+            raise InvalidInput(f"Invalid target: {raw!r}")
+        host, rest = value[1:end], value[end + 1:]
+        if not is_ip(host):
+            raise InvalidInput(f"Invalid target: {raw!r}")
+        if rest:
+            if not rest.startswith(":"):
+                raise InvalidInput(f"Invalid target: {raw!r}")
+            port = rest[1:]
+    elif value.count(":") == 1:
+        host, port = value.split(":")
+
+    if port is not None:
+        port = parse_port(port)
+    host = parse_target(host)
+
+    shown = f"[{host}]" if ":" in host else host
+    if port is not None:
+        shown += f":{port}"
+    return f"{scheme}://{shown}" if scheme else shown

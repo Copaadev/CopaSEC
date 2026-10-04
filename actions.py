@@ -66,14 +66,14 @@ def make_handlers(config: dict) -> dict:
                      dns_recon.render_subdomains)
 
     def http():
-        target = ask_target()
+        target = ask_target("Target (host, host:port or URL)", web=True)
         if target:
             _execute("Requesting page...",
                      lambda: http_analysis.http_analysis(target, config),
                      http_analysis.render_http)
 
     def sec_headers():
-        target = ask_target()
+        target = ask_target("Target (host, host:port or URL)", web=True)
         if target:
             _execute("Auditing headers...",
                      lambda: http_analysis.security_headers(target, config),

@@ -65,17 +65,27 @@ def _attempt(url: str, timeout: int):
         return None, True, describe_network_error(exc)
 
 
+def _split_target(target: str):
+    """'http://h:8080' -> ('http', 'h:8080'); 'h:8080' -> ('', 'h:8080')."""
+    if "://" in target:
+        scheme, netloc = target.split("://", 1)
+        return scheme, netloc
+    return "", target
+
+
 def fetch_page(target: str, timeout: int):
-    """Tenta HTTPS primeiro e depois HTTP. Retorna (pagina, erro)."""
+    """Usa o esquema informado (ou tenta HTTPS e depois HTTP). Retorna (pagina, erro)."""
+    given, netloc = _split_target(target)
+    schemes = (given,) if given else ("https", "http")
     errors = []
-    for scheme in ("https", "http"):
-        url = f"{scheme}://{target}/"
+    for scheme in schemes:
+        url = f"{scheme}://{netloc}/"
         page, verified, err = _attempt(url, timeout)
         if page is not None:
             page.update(scheme=scheme, cert_verified=verified, url=url)
             return page, ""
-        errors.append(f"{scheme}: {err}")
-    return None, "; ".join(errors)
+        errors.append(f"{scheme}: {err.rstrip('.')}")
+    return None, "\n".join(errors)
 
 
 def http_analysis(target: str, config: dict) -> dict:
